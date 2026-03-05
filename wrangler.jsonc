@@ -1,0 +1,36 @@
+{
+  "name": "mcpfromdocs",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mcpfromdocs-db",
+      "database_id": "d83b07b8-23d8-4a44-b5b9-8038865a046f"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "MCP_CONFIGS",
+      "id": "5b400bac5d5e4edbb0b17afe519c02f5"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "MCP_HOST", "class_name": "McpHostDO" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_classes": ["McpHostDO"] }
+  ],
+  "workers_dev": true
+}

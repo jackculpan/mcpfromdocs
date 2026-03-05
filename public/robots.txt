@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mcpfromdocs.merchantai.workers.dev/sitemap.xml
