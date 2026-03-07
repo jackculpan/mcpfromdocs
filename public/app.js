@@ -239,16 +239,109 @@ function downloadZip() {
   a.click();
 }
 
+// --- Demo loader ---
+function loadDemo() {
+  document.getElementById("doc-input").value = "https://petstore3.swagger.io/api/v3/openapi.json";
+  handleParse();
+}
+
+// --- Connect modal ---
+function getMcpUrlText() {
+  return document.getElementById("mcp-url").textContent || "";
+}
+
+function showConnect(platform) {
+  const url = getMcpUrlText();
+  const modal = document.getElementById("connect-modal");
+  const title = document.getElementById("connect-modal-title");
+  const body = document.getElementById("connect-modal-body");
+
+  const instructions = {
+    claude: {
+      title: "Connect to Claude Desktop",
+      steps: [
+        { text: `Open your Claude Desktop config file:`, code: "~/.claude/claude_desktop_config.json" },
+        { text: "Add this MCP server entry:", code: `{
+  "mcpServers": {
+    "${state.parsedApi?.name || 'my-api'}": {
+      "url": "${url}"
+    }
+  }
+}` },
+        { text: "Restart Claude Desktop. Your MCP tools will appear in the tools menu." },
+      ],
+    },
+    cursor: {
+      title: "Connect to Cursor",
+      steps: [
+        { text: "Open Cursor Settings (Cmd+, or Ctrl+,) and go to the MCP tab." },
+        { text: "Click \"Add new MCP server\" and enter:", code: `Name: ${state.parsedApi?.name || 'my-api'}
+Type: SSE
+URL: ${url}` },
+        { text: "Click Save. The server will connect automatically." },
+      ],
+    },
+    windsurf: {
+      title: "Connect to Windsurf",
+      steps: [
+        { text: "Open your Windsurf MCP config file:", code: "~/.codeium/windsurf/mcp_config.json" },
+        { text: "Add this server entry:", code: `{
+  "mcpServers": {
+    "${state.parsedApi?.name || 'my-api'}": {
+      "serverUrl": "${url}"
+    }
+  }
+}` },
+        { text: "Restart Windsurf. Your tools will be available in Cascade." },
+      ],
+    },
+    chatgpt: {
+      title: "Connect to ChatGPT",
+      steps: [
+        { text: "Go to ChatGPT Settings > Beta features and enable \"MCP Connectors\"." },
+        { text: "Open any chat, click the plug icon, then \"Add MCP connector\"." },
+        { text: "Enter the SSE URL:", code: url },
+        { text: "Click Connect. Your API tools will appear as available actions." },
+      ],
+    },
+  };
+
+  const info = instructions[platform];
+  title.textContent = info.title;
+  body.innerHTML = info.steps.map((s, i) => `
+    <div class="connect-step">
+      <div class="connect-step-num">Step ${i + 1}</div>
+      <p>${esc(s.text)}</p>
+      ${s.code ? `<div class="connect-code"><button class="connect-copy-btn" onclick="copyConnectCode(this)">Copy</button>${esc(s.code)}</div>` : ""}
+    </div>
+  `).join("");
+
+  modal.hidden = false;
+}
+
+function hideConnect() {
+  document.getElementById("connect-modal").hidden = true;
+}
+
+function copyConnectCode(btn) {
+  const code = btn.parentElement.textContent.replace("Copy", "").trim();
+  navigator.clipboard.writeText(code);
+  btn.textContent = "Copied!";
+  setTimeout(() => btn.textContent = "Copy", 2000);
+}
+
+// Close connect modal on backdrop click
+document.addEventListener("click", (e) => {
+  const modal = document.getElementById("connect-modal");
+  if (e.target === modal) modal.hidden = true;
+});
+
 // --- Helpers ---
 function setLoading(btn, loading) {
   btn.disabled = loading;
   btn.querySelector(".btn-text").hidden = loading;
   btn.querySelector(".btn-loading").hidden = !loading;
 }
-
-// Legacy compat — unused now but kept for safety
-function show(id) { document.getElementById(id).hidden = false; }
-function hide(id) { document.getElementById(id).hidden = true; }
 
 function esc(str) {
   if (!str) return "";

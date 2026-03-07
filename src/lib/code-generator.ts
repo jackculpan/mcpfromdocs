@@ -45,7 +45,7 @@ function genWrangler(name: string, className: string, authEnvVar: string): strin
     durable_objects: {
       bindings: [{ name: "MCP_OBJECT", class_name: className }],
     },
-    migrations: [{ tag: "v1", new_classes: [className] }],
+    migrations: [{ tag: "v1", new_sqlite_classes: [className] }],
   }, null, 2);
 }
 
@@ -180,7 +180,7 @@ function genToolRegistration(api: ParsedAPI, ep: ParsedEndpoint, authEnvVar: str
       "${ep.id}",
       "${ep.description.replace(/"/g, '\\"').slice(0, 200)}",
       ${schema},
-      async (${paramDestructure ? paramDestructure + ", " : ""}{ sendNotification }) => {
+      async (${paramDestructure || "{}"}) => {
         const data = await apiRequest(this.env, "${ep.method}", ${pathExpr}, ${queryObj}, ${bodyObj});
         return {
           content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],

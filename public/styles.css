@@ -181,6 +181,8 @@ body {
 }
 
 .landing-desc {
+  font-family: var(--sans);
+  font-weight: 400;
   font-size: .92rem;
   line-height: 1.75;
   color: var(--text);
@@ -386,6 +388,7 @@ body {
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 40px);
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Top bar */
@@ -459,6 +462,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   overflow-y: auto;
   padding: 28px 0 32px;
   animation: stepSlide .5s var(--ease) both;
@@ -473,9 +477,9 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.step::-webkit-scrollbar { width: 3px; }
+.step::-webkit-scrollbar { width: 4px; }
 .step::-webkit-scrollbar-track { background: transparent; }
-.step::-webkit-scrollbar-thumb { background: var(--border-hi); }
+.step::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
 
 .step-label {
   font-family: var(--mono);
@@ -615,9 +619,9 @@ textarea:focus {
   scrollbar-color: var(--border-hi) transparent;
 }
 
-.ep-list::-webkit-scrollbar { width: 3px; }
+.ep-list::-webkit-scrollbar { width: 4px; }
 .ep-list::-webkit-scrollbar-track { background: transparent; }
-.ep-list::-webkit-scrollbar-thumb { background: var(--border-hi); }
+.ep-list::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
 
 .endpoint {
   border: 1px solid var(--border);
@@ -856,12 +860,12 @@ textarea:focus {
 }
 
 /* ── Chat ── */
-.step-chat { gap: 0; }
+.step-chat { gap: 0; justify-content: flex-start; }
+.step-select { justify-content: flex-start; }
 
 .chat {
   flex: 1;
-  min-height: 180px;
-  max-height: 50vh;
+  min-height: 120px;
   overflow-y: auto;
   padding: 12px 0;
   display: flex;
@@ -871,9 +875,9 @@ textarea:focus {
   scrollbar-color: var(--border-hi) transparent;
 }
 
-.chat::-webkit-scrollbar { width: 3px; }
+.chat::-webkit-scrollbar { width: 4px; }
 .chat::-webkit-scrollbar-track { background: transparent; }
-.chat::-webkit-scrollbar-thumb { background: var(--border-hi); }
+.chat::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
 
 .message {
   padding: 10px 14px;
@@ -999,8 +1003,8 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 12px;
-  padding: 14px 0;
+  margin-top: 0;
+  padding: 10px 0;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -1079,6 +1083,187 @@ textarea:focus {
   color: var(--text-dim);
 }
 
+/* ── Demo hint ── */
+.demo-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--text-dim);
+}
+
+.demo-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+  transition: color .2s var(--ease);
+}
+
+.demo-link:hover { color: var(--accent-hover); }
+
+/* ── Connect bar ── */
+.connect-bar {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.connect-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+
+.connect-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.connect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .25s var(--ease);
+}
+
+.connect-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.connect-icon {
+  font-weight: 700;
+  font-size: .6rem;
+  opacity: .6;
+}
+
+/* ── Connect modal ── */
+.connect-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10,9,8,.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalIn .3s var(--ease);
+}
+
+.connect-modal[hidden] { display: none; }
+
+.connect-modal-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  max-width: 520px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.connect-modal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.connect-modal-title {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.connect-modal-body {
+  padding: 18px;
+}
+
+.connect-step {
+  margin-bottom: 16px;
+}
+
+.connect-step-num {
+  font-family: var(--mono);
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.connect-step p {
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin: 0;
+}
+
+.connect-code {
+  display: block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--text-bright);
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  position: relative;
+}
+
+.connect-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 600;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  transition: all .25s var(--ease);
+}
+
+.connect-copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ════════════════════════════════════
    TABLET / SMALL LAPTOP
    ════════════════════════════════════ */
@@ -1120,4 +1305,7 @@ textarea:focus {
   .api-meta > div:last-child { border-bottom: none; }
   .purchase-bar { flex-direction: column; align-items: stretch; gap: 8px; }
   .purchase-info { text-align: center; }
+  .connect-btns { flex-direction: column; }
+  .connect-btn { justify-content: center; }
+  .demo-hint { flex-direction: column; text-align: center; }
 }

@@ -72,22 +72,34 @@ function buildZodSchema(params: EndpointParam[]): Record<string, ZodTypeAny> {
   return schema;
 }
 
-export function proxyToMcpHost(request: Request, env: Env, serverId: string, protocol: "sse" | "mcp"): Response {
-  const id = env.MCP_HOST.idFromName(serverId);
-  const stub = env.MCP_HOST.get(id);
+// Pre-built route handlers using agents framework
+const sseHandler = McpHostDO.serveSSE("/sse", { binding: "MCP_HOST" });
+const mcpHandler = McpHostDO.serve("/mcp", { binding: "MCP_HOST" });
 
-  // Rewrite URL to the protocol path the DO expects
+export function proxyToMcpHost(request: Request, env: Env, serverId: string, protocol: "sse" | "mcp"): Response {
+  // Rewrite URL: /sse/{serverId}/* → /sse/* with serverId as sessionId param
+  // For /sse/message (no serverId in path), leave the path as-is
   const url = new URL(request.url);
-  // Keep sub-paths like /sse/message
-  const subPath = url.pathname.replace(`/${protocol}/${serverId}`, "") || "";
-  url.pathname = `/${protocol}${subPath}`;
+  const prefix = `/${protocol}/${serverId}`;
+  if (url.pathname.startsWith(prefix)) {
+    const subPath = url.pathname.slice(prefix.length) || "";
+    url.pathname = `/${protocol}${subPath}`;
+  }
+
+  // Use serverId as sessionId so each server gets its own DO instance
+  if (!url.searchParams.has("sessionId")) {
+    url.searchParams.set("sessionId", serverId);
+  }
 
   const headers = new Headers(request.headers);
   headers.set("X-Server-Id", serverId);
 
-  return stub.fetch(new Request(url.toString(), {
+  const rewritten = new Request(url.toString(), {
     method: request.method,
     headers,
     body: request.body,
-  })) as unknown as Response;
+  });
+
+  const handler = protocol === "sse" ? sseHandler : mcpHandler;
+  return handler.fetch(rewritten, env, {} as ExecutionContext) as unknown as Response;
 }

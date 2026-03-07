@@ -58,8 +58,14 @@ export default {
     }
 
     // MCP proxy: /sse/{serverId} and /mcp/{serverId}
+    // Also handle /sse/message?sessionId={serverId} (sent by MCP clients after SSE connect)
     const sseMatch = url.pathname.match(/^\/sse\/([a-z0-9]+)(\/.*)?$/);
-    if (sseMatch) return proxyToMcpHost(request, env, sseMatch[1], "sse");
+    if (sseMatch && sseMatch[1] !== "message") return proxyToMcpHost(request, env, sseMatch[1], "sse");
+
+    if (url.pathname === "/sse/message") {
+      const sessionId = url.searchParams.get("sessionId");
+      if (sessionId) return proxyToMcpHost(request, env, sessionId, "sse");
+    }
 
     const mcpMatch = url.pathname.match(/^\/mcp\/([a-z0-9]+)(\/.*)?$/);
     if (mcpMatch) return proxyToMcpHost(request, env, mcpMatch[1], "mcp");

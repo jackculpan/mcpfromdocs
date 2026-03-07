@@ -17,13 +17,11 @@ export async function handleCreateCheckout(request: Request, env: Env): Promise<
   const params = new URLSearchParams({
     "payment_method_types[0]": "card",
     mode: "subscription",
-    "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": "1500",
-    "line_items[0][price_data][recurring][interval]": "month",
-    "line_items[0][price_data][product_data][name]": `MCP Server: ${server.name}`,
-    "line_items[0][price_data][product_data][description]": `Live MCP server with ${server.endpoints.length} tools`,
+    "line_items[0][price]": "price_1T7SgWK2fhY31VJUJrKXnRSy",
+    "line_items[0][quantity]": "1",
     success_url: `${origin}/?server=${serverId}&purchased=true`,
     cancel_url: `${origin}/?server=${serverId}`,
+    "subscription_data[metadata][server_id]": serverId,
     "metadata[server_id]": serverId,
   });
 
@@ -86,11 +84,29 @@ export async function handleWebhook(request: Request, env: Env): Promise<Respons
     }
   }
 
-  if (event.type === "invoice.payment_failed" || event.type === "customer.subscription.deleted") {
+  if (event.type === "customer.subscription.deleted") {
     const sub = event.data.object;
     const serverId = (sub.metadata as Record<string, string>)?.server_id;
     if (serverId) {
       await expireServer(env.DB, env.MCP_CONFIGS, serverId);
+    }
+  }
+
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data.object;
+    const subscriptionId = invoice.subscription as string;
+    if (subscriptionId) {
+      // Look up the subscription to get server_id from its metadata
+      const subRes = await fetch(`https://api.stripe.com/v1/subscriptions/${subscriptionId}`, {
+        headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` },
+      });
+      if (subRes.ok) {
+        const sub = (await subRes.json()) as { metadata: Record<string, string> };
+        const serverId = sub.metadata?.server_id;
+        if (serverId) {
+          await expireServer(env.DB, env.MCP_CONFIGS, serverId);
+        }
+      }
     }
   }
 

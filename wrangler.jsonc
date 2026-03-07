@@ -30,7 +30,7 @@
     ]
   },
   "migrations": [
-    { "tag": "v1", "new_classes": ["McpHostDO"] }
+    { "tag": "v1", "new_sqlite_classes": ["McpHostDO"] }
   ],
   "workers_dev": true
 }

@@ -108,7 +108,7 @@ function copyMcpUrl() {
   navigator.clipboard.writeText(url);
   const btn = document.querySelector(".btn-copy");
   btn.textContent = "Copied!";
-  setTimeout(() => btn.textContent = "copy", 2000);
+  setTimeout(() => btn.textContent = "Copy", 2000);
 }
 
 function startTimer() {

@@ -73,7 +73,7 @@
         <div class="hero-accent-line"></div>
       </div>
       <div class="landing-aside">
-        <p class="landing-desc">Paste any API documentation. Select your endpoints. Get a running MCP server in sixty seconds. No code. No deploy step.</p>
+        <h2 class="landing-desc">Paste any API documentation. Select your endpoints. Get a running MCP server in sixty seconds. No code. No deploy step.</h2>
         <div class="landing-formats">
           <span>OpenAPI</span>
           <span>Mintlify</span>
@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <div class="landing-stats">
+    <section class="landing-stats" aria-label="Key metrics">
       <div class="landing-stat">
         <span class="landing-stat-val">6</span>
         <span class="landing-stat-lbl">Formats</span>
@@ -106,7 +106,7 @@
         <span class="landing-stat-val">$15</span>
         <span class="landing-stat-lbl">Per month</span>
       </div>
-    </div>
+    </section>
 
     <footer class="landing-footer">
       <span>mcpfromdocs</span>
@@ -146,11 +146,15 @@
           <span class="btn-text"><span class="cta-text">Parse docs</span><span class="cta-arrow">&rarr;</span></span>
           <span class="btn-loading" hidden><span class="spinner"></span></span>
         </button>
+        <div class="demo-hint">
+          <span>No API docs handy?</span>
+          <button class="demo-link" onclick="loadDemo()">Try the Petstore demo</button>
+        </div>
         <div id="parse-error" class="err" hidden></div>
       </div>
 
       <!-- Step 2: Select endpoints -->
-      <div id="step-select" class="step" hidden>
+      <div id="step-select" class="step step-select" hidden>
         <div class="step-label">02 &mdash; Choose endpoints</div>
         <div class="api-meta" id="api-info"></div>
         <div class="sel-bar">
@@ -205,6 +209,23 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
           </button>
         </div>
+        <div class="connect-bar">
+          <div class="connect-label">Add to your client</div>
+          <div class="connect-btns">
+            <button class="connect-btn" onclick="showConnect('claude')">
+              <span class="connect-icon">C</span> Claude
+            </button>
+            <button class="connect-btn" onclick="showConnect('cursor')">
+              <span class="connect-icon">&gt;_</span> Cursor
+            </button>
+            <button class="connect-btn" onclick="showConnect('windsurf')">
+              <span class="connect-icon">W</span> Windsurf
+            </button>
+            <button class="connect-btn" onclick="showConnect('chatgpt')">
+              <span class="connect-icon">G</span> ChatGPT
+            </button>
+          </div>
+        </div>
         <div class="purchase-bar">
           <div class="purchase-info"><strong>$15/mo</strong> &mdash; keep this server permanently live</div>
           <button class="cta cta-sm" onclick="handlePurchase()"><span class="cta-text">Subscribe</span><span class="cta-arrow">&rarr;</span></button>
@@ -213,7 +234,7 @@
       </div>
 
       <!-- Code Preview -->
-      <div id="step-preview" class="step" hidden>
+      <div id="step-preview" class="step step-select" hidden>
         <div class="step-label">&check; &mdash; Generated code</div>
         <div class="file-tabs" id="file-tabs"></div>
         <pre class="code-block"><code id="code-preview" class="language-typescript"></code></pre>
@@ -233,6 +254,19 @@ npm install
 npx wrangler deploy</code></pre>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Connect instructions modal -->
+  <div id="connect-modal" class="connect-modal" hidden>
+    <div class="connect-modal-inner">
+      <div class="connect-modal-top">
+        <span class="connect-modal-title" id="connect-modal-title"></span>
+        <button class="modal-close" onclick="hideConnect()" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="connect-modal-body" id="connect-modal-body"></div>
     </div>
   </div>
 

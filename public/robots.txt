@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /sse/
+Disallow: /mcp/
 
-Sitemap: https://mcpfromdocs.merchantai.workers.dev/sitemap.xml
+Sitemap: https://mcpfromdocs.com/sitemap.xml

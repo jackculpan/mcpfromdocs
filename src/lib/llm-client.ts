@@ -37,13 +37,13 @@ After receiving a tool result, summarize it helpfully for the user. Do NOT call 
   ];
 
   // Add recent history (last 10 messages to stay within context)
+  // The current user message is already in `messages` (added by chat.ts), so don't add it again
   const recent = messages.slice(-10);
   for (const msg of recent) {
     if (msg.role === "user" || msg.role === "assistant") {
       llmMessages.push({ role: msg.role, content: msg.content });
     }
   }
-  llmMessages.push({ role: "user", content: userMessage });
 
   const toolCalls: Array<{ tool: string; result: unknown }> = [];
   let rounds = 0;
