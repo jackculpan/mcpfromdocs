@@ -24,13 +24,8 @@
       "id": "5b400bac5d5e4edbb0b17afe519c02f5"
     }
   ],
-  "durable_objects": {
-    "bindings": [
-      { "name": "MCP_HOST", "class_name": "McpHostDO" }
-    ]
-  },
-  "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["McpHostDO"] }
+  "worker_loaders": [
+    { "binding": "LOADER" }
   ],
   "workers_dev": true
 }

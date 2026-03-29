@@ -5,9 +5,7 @@ import { handleDeploy } from "./routes/deploy";
 import { handleChat } from "./routes/chat";
 import { handleCreateCheckout, handleWebhook } from "./routes/purchase";
 import { getServer } from "./lib/db";
-import { proxyToMcpHost } from "./lib/mcp-host";
-
-export { McpHostDO } from "./lib/mcp-host";
+import { handleMcpRequest } from "./lib/mcp-host";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -57,18 +55,18 @@ export default {
       }
     }
 
-    // MCP proxy: /sse/{serverId} and /mcp/{serverId}
-    // Also handle /sse/message?sessionId={serverId} (sent by MCP clients after SSE connect)
+    // MCP routes: /sse/{serverId}, /mcp/{serverId}, /sse/message?sessionId={serverId}
+    // Served by Dynamic Workers via the Worker Loader API
     const sseMatch = url.pathname.match(/^\/sse\/([a-z0-9]+)(\/.*)?$/);
-    if (sseMatch && sseMatch[1] !== "message") return proxyToMcpHost(request, env, sseMatch[1], "sse");
+    if (sseMatch && sseMatch[1] !== "message") return handleMcpRequest(request, env, sseMatch[1]);
 
     if (url.pathname === "/sse/message") {
       const sessionId = url.searchParams.get("sessionId");
-      if (sessionId) return proxyToMcpHost(request, env, sessionId, "sse");
+      if (sessionId) return handleMcpRequest(request, env, sessionId);
     }
 
     const mcpMatch = url.pathname.match(/^\/mcp\/([a-z0-9]+)(\/.*)?$/);
-    if (mcpMatch) return proxyToMcpHost(request, env, mcpMatch[1], "mcp");
+    if (mcpMatch) return handleMcpRequest(request, env, mcpMatch[1]);
 
     // Static assets handled by wrangler assets config
     return new Response("Not found", { status: 404 });
