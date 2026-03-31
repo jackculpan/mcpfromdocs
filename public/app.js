@@ -240,10 +240,11 @@ function downloadZip() {
 }
 
 // --- Demo loader ---
-function loadDemo() {
-  document.getElementById("doc-input").value = "https://petstore3.swagger.io/api/v3/openapi.json";
+function loadExample(url) {
+  document.getElementById("doc-input").value = url || "https://petstore3.swagger.io/api/v3/openapi.json";
   handleParse();
 }
+function loadDemo() { loadExample(); }
 
 // --- Connect modal ---
 function getMcpUrlText() {

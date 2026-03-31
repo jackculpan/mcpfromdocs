@@ -151,8 +151,19 @@
           <span class="btn-loading" hidden><span class="spinner"></span></span>
         </button>
         <div class="demo-hint">
-          <span>No API docs handy?</span>
-          <button class="demo-link" onclick="loadDemo()">Try the Petstore demo</button>
+          <span>No API docs handy? Try one:</span>
+          <div class="demo-examples">
+            <button class="demo-link" onclick="loadExample('https://petstore3.swagger.io/api/v3/openapi.json')">Petstore</button>
+            <button class="demo-link" onclick="loadExample('https://resend.com/docs/api-reference/emails/send-email')">Resend</button>
+            <button class="demo-link" onclick="loadExample('https://developers.notion.com/reference/intro')">Notion</button>
+            <button class="demo-link" onclick="loadExample('https://jsonplaceholder.typicode.com/')">JSONPlaceholder</button>
+            <button class="demo-link" onclick="loadExample('https://dummyjson.com/docs')">DummyJSON</button>
+            <button class="demo-link" onclick="loadExample('https://dog.ceo/dog-api/documentation/')">Dog API</button>
+            <button class="demo-link" onclick="loadExample('https://restcountries.com/')">Countries</button>
+            <button class="demo-link" onclick="loadExample('https://api.chucknorris.io/')">Chuck Norris</button>
+            <button class="demo-link" onclick="loadExample('https://openlibrary.org/developers/api')">Open Library</button>
+            <button class="demo-link" onclick="loadExample('https://github.com/HackerNews/API/blob/master/README.md')">Hacker News</button>
+          </div>
         </div>
         <div id="parse-error" class="err" hidden></div>
       </div>

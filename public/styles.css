@@ -1093,29 +1093,35 @@ textarea:focus {
 /* ── Demo hint ── */
 .demo-hint {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
   font-family: var(--mono);
   font-size: .72rem;
   color: var(--text-dim);
 }
 
-.demo-link {
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: .72rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  padding: 0;
-  transition: color .2s var(--ease);
+.demo-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.demo-link:hover { color: var(--accent-hover); }
+.demo-link {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 3px 8px;
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+
+.demo-link:hover { color: var(--accent-hover); border-color: var(--accent); }
 
 /* ── Connect bar ── */
 .connect-bar {
@@ -1314,5 +1320,6 @@ textarea:focus {
   .purchase-info { text-align: center; }
   .connect-btns { flex-direction: column; }
   .connect-btn { justify-content: center; }
-  .demo-hint { flex-direction: column; text-align: center; }
+  .demo-hint { text-align: center; }
+  .demo-examples { justify-content: center; }
 }
