@@ -109,7 +109,7 @@ function mapSchemaType(type: string | undefined): EndpointParam["type"] {
   return "string";
 }
 
-const EXTRACTION_PROMPT = `You are an API documentation parser. Extract ALL API endpoints from the following documentation.
+const EXTRACTION_PROMPT = `You are an API documentation parser. Extract ONLY the API endpoints that are explicitly documented below. Do NOT invent, guess, or infer endpoints that are not clearly described in the documentation.
 
 Return ONLY valid JSON (no markdown, no explanation) matching this exact schema:
 {
@@ -139,7 +139,9 @@ Return ONLY valid JSON (no markdown, no explanation) matching this exact schema:
       ]
     }
   ]
-}`;
+}
+
+IMPORTANT: Only include endpoints with an explicit HTTP method and path shown in the documentation. Do not generate CRUD variations unless each one is explicitly documented.`;
 
 export async function parseWithAI(text: string, env: Env): Promise<ParsedAPI> {
   const prompt = `${EXTRACTION_PROMPT}\n\n---\nDOCUMENTATION:\n${text.slice(0, 60_000)}`;
@@ -152,10 +154,13 @@ export async function parseWithAI(text: string, env: Env): Promise<ParsedAPI> {
 
 async function parseWithWorkersAI(prompt: string, ai: Ai): Promise<ParsedAPI> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = await (ai as any).run("@cf/meta/llama-3.1-70b-instruct", {
-    messages: [{ role: "user", content: prompt }],
-    max_tokens: 8000,
-  });
+  const result = await Promise.race([
+    (ai as any).run("@cf/meta/llama-3.1-70b-instruct", {
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 8000,
+    }),
+    new Promise((_, reject) => setTimeout(() => reject(new Error("AI parsing timed out after 45s. Try pasting the OpenAPI spec URL directly.")), 45_000)),
+  ]);
   const text = typeof result === "string" ? result : result?.response || "";
   return extractJson(text);
 }
@@ -173,7 +178,12 @@ async function parseWithClaude(prompt: string, apiKey: string): Promise<ParsedAP
       max_tokens: 8000,
       messages: [{ role: "user", content: prompt }],
     }),
+    signal: AbortSignal.timeout(45_000),
   });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Claude API error ${res.status}: ${body.slice(0, 200)}`);
+  }
   const data = (await res.json()) as { content: Array<{ text: string }> };
   return extractJson(data.content[0].text);
 }

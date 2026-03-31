@@ -361,6 +361,13 @@ body {
   border-radius: 50%;
 }
 
+.footer-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+.footer-link:hover { color: var(--text); }
+
 /* ════════════════════════════════════
    MODAL
    ════════════════════════════════════ */
