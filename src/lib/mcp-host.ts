@@ -61,7 +61,7 @@ function buildZodSchema(params: EndpointParam[]): Record<string, ZodTypeAny> {
         number: z.number(),
         boolean: z.boolean(),
         array: z.array(z.string()),
-        object: z.record(z.unknown()),
+        object: z.record(z.string(), z.unknown()),
       };
       field = typeMap[p.type] || z.string();
     }
