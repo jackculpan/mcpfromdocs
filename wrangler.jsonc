@@ -26,11 +26,12 @@
   ],
   "durable_objects": {
     "bindings": [
-      { "name": "MCP_HOST", "class_name": "McpHostDO" }
+      { "name": "MCP_HOST", "class_name": "McpHostSqliteDO" }
     ]
   },
   "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["McpHostDO"] }
+    { "tag": "v1", "new_sqlite_classes": ["McpHostDO"] },
+    { "tag": "v2", "new_sqlite_classes": ["McpHostSqliteDO"] }
   ],
   "workers_dev": true
 }

@@ -7,7 +7,7 @@ import { handleCreateCheckout, handleWebhook } from "./routes/purchase";
 import { getServer } from "./lib/db";
 import { proxyToMcpHost } from "./lib/mcp-host";
 
-export { McpHostDO } from "./lib/mcp-host";
+export { McpHostSqliteDO, McpHostDO } from "./lib/mcp-host";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
